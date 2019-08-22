@@ -1,0 +1,3 @@
+把data处理好 shanghai那个
+读成[imagematrix,den]的格式
+查查怎么读mathlab文件
