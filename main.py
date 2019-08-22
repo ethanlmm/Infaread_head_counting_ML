@@ -1,6 +1,6 @@
-from ir_ml.io import *
-from ir_ml.model import *
-from ir_ml.util import *
+from data import *
+from model import *
+from util import *
 import tensorflow as tf
 
 

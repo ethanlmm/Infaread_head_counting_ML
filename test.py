@@ -1,3 +1,3 @@
-from ir_ml.io import *
-from ir_ml.model import *
-from ir_ml.util import *
+from io import *
+from model import *
+from util import *
