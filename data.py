@@ -56,8 +56,8 @@ def path_generator(path, type=None):
             paths.append(path+file)
     return paths
 
-def process(operation,obj_list): return list(map(operation,obj_list))
-
+def FOR(operation,obj_list): return list(map(operation,obj_list))
+def FOR2(operation,obj_list):return [operation(x) for x in obj_list]
 
 
 
