@@ -1,3 +1,4 @@
 把data处理好 shanghai那个
 读成[imagematrix,den]的格式
 查查怎么读mathlab文件
+https://www.researchgate.net/post/explain_ground-truth_mat_file_of_an_image_for_CNN

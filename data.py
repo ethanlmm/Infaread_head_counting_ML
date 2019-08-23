@@ -4,19 +4,24 @@ import time
 import tensorflow as tf
 import cv2
 import numpy as np
+import scipy.io as sio
 
 
 
 #path
 root=''
-defult_model_path=root+'models/'
-default_data_path=root+'data/'
-image_path=default_data_path + 'image'
+defult_model_path=root+'models'
+default_data_path=root+'data'
+shanghai_path=default_data_path+'/ShanghaiTech_Crowd_counting_Dataset'
+
+main_train_image=shanghai_path+'/part_B_final/train_data/images'
+main_test_den=shanghai_path+'/part_B_final/train_data/ground_truth'
 
 #types of files
 jpg = '.*\.jpg|.*\.jpeg'
 csv = '.*\.csv'
 png = '.*\.png'
+mat = '.*\.mat'
 
 
 
@@ -49,7 +54,7 @@ def tf_png_read(path):
 
 def path_generator(path, type=None):
     path=path + '/'
-    if type is None: return list(map(lambda x: path + x, os.listdir(path)))
+    if type is None: return [path+name for name in os.listdir(path)]
     paths=[]
     for file in os.listdir(path):
         if(re.match(type, file)):
@@ -59,7 +64,9 @@ def path_generator(path, type=None):
 def FOR(operation,obj_list): return list(map(operation,obj_list))
 def FOR2(operation,obj_list):return [operation(x) for x in obj_list]
 
-
+def mat_read(path):
+    mat_contents = sio.loadmat(path)
+    return mat_contents
 
 #belows are given, may not be optimized
 def cv2_image_read(path):
