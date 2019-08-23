@@ -1,78 +1,34 @@
 import tensorflow as tf
+from tensorflow import keras
 
+def MCNN():
+    inputs = keras.layers.Input(shape=(None, None, 3),name='global_input')
 
-class Mcnn(tf.keras.Model):
-    def __init__(self):
-        super(Mcnn, self).__init__()
+    conv_m = keras.layers.Conv2D(filters=20, kernel_size=(7, 7), strides=1, dilation_rate=1, padding='same',activation='relu')(inputs)
+    conv_m = keras.layers.Conv2D(filters=40, kernel_size=(5, 5), strides=1, dilation_rate=2, padding='same',activation='relu')(conv_m)
+    conv_m = keras.layers.Conv2D(filters=20, kernel_size=(5, 5), strides=1, dilation_rate=3, padding='same',activation='relu')(conv_m)
+    conv_m = keras.layers.Conv2D(filters=10, kernel_size=(5, 5), strides=1, dilation_rate=5, padding='same',activation='relu')(conv_m)
 
-        self.conv_m = tf.keras.Sequential([tf.keras.layers.Conv2D(filters=20, kernel_size=(7, 7), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu',),
-                                           tf.keras.layers.Conv2D(filters=40, kernel_size=(5, 5), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu'),
-                                           tf.keras.layers.Conv2D(filters=20, kernel_size=(5, 5), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu'),
-                                           tf.keras.layers.Conv2D(filters=10, kernel_size=(5, 5), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu')])
-        self.conv_s = tf.keras.Sequential([tf.keras.layers.Conv2D(filters=24, kernel_size=(5, 5), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu', ),
-                                           tf.keras.layers.Conv2D(filters=48, kernel_size=(3, 3), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu'),
-                                           tf.keras.layers.Conv2D(filters=24, kernel_size=(3, 3), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu'),
-                                           tf.keras.layers.Conv2D(filters=12, kernel_size=(3, 3), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu')])
-        self.conv_l = tf.keras.Sequential([tf.keras.layers.Conv2D(filters=16, kernel_size=(9, 9), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu', ),
-                                           tf.keras.layers.Conv2D(filters=32, kernel_size=(7, 7), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu'),
-                                           tf.keras.layers.Conv2D(filters=16, kernel_size=(7, 7), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu'),
-                                           tf.keras.layers.Conv2D(filters=8, kernel_size=(7, 7), strides=1,
-                                                                  padding='same',
-                                                                  activation='relu')])
-        self.conv_merge = tf.keras.layers.Concatenate(axis=3)
-        self.out=tf.keras.layers.Conv2D(1, (1, 1), padding='same')
-        self.flatten=tf.keras.layers.Flatten()
-        self.dense1=tf.keras.layers.Dense(32, activation='relu')
-        self.dense2=tf.keras.layers.Dense(10, activation='softmax')
+    conv_s = keras.layers.Conv2D(filters=24, kernel_size=(5, 5), strides=1, dilation_rate=1, padding='same', activation='relu')(inputs)
+    conv_s = keras.layers.Conv2D(filters=48, kernel_size=(3, 3), strides=1, dilation_rate=2, padding='same', activation='relu')(conv_s)
+    conv_s = keras.layers.Conv2D(filters=24, kernel_size=(3, 3), strides=1, dilation_rate=3, padding='same', activation='relu')(conv_s)
+    conv_s = keras.layers.Conv2D(filters=12, kernel_size=(3, 3), strides=1, dilation_rate=5, padding='same', activation='relu')(conv_s)
 
-
-    def call(self, inputs, training=False, mask=None):
-        convs=self.conv_s(inputs)
-        convl=self.conv_l(inputs)
-        convm=self.conv_m(inputs)
-        x=self.conv_merge([convl,convm,convs])
-        x=self.out(x)
-        x=self.flatten(x)
-        x=self.dense1(x)
-        x=self.dense2(x)
-        return x
-
+    conv_l = keras.layers.Conv2D(filters=16, kernel_size=(9, 9), strides=1, dilation_rate=1, padding='same',activation='relu')(inputs)
+    conv_l = keras.layers.Conv2D(filters=32, kernel_size=(7, 7), strides=1, dilation_rate=2, padding='same',activation='relu')(conv_l)
+    conv_l = keras.layers.Conv2D(filters=16, kernel_size=(7, 7), strides=1, dilation_rate=3, padding='same',activation='relu')(conv_l)
+    conv_l = keras.layers.Conv2D(filters=8, kernel_size=(7, 7), strides=1, dilation_rate=5, padding='same', activation='relu')(conv_l)
+    conv_merge = keras.layers.Concatenate(axis=3)([conv_l, conv_m, conv_s])
+    outs = keras.layers.Conv2D(1, (1,1), padding='same')(conv_merge)
+    mcnn=keras.Model(inputs,outs,name='mcnn')
+    return mcnn
 
 def maaae(y_true, y_pred):
     return abs(tf.keras.backend.sum(y_true) - tf.keras.backend.sum(y_pred))
 
-
 def mssse(y_true, y_pred):
     return (tf.keras.backend.sum(y_true) - tf.keras.backend.sum(y_pred)) * (
                 tf.keras.backend.sum(y_true) - tf.keras.backend.sum(y_pred))
-
-
-
-
-
-
 
 #model.compile(optimizer='adam',loss='mse',metrics=[maaae, mssse])
 
@@ -98,8 +54,7 @@ def CrowdNet():
     # custom VGG:
 
     if (batch_norm):
-        model.add(tf.keras.layers.Conv2D(64, kernel_size=kernel, input_shape=(rows, cols, 1), activation='relu',
-                                         padding='same'))
+        model.add(tf.keras.layers.Conv2D(64, kernel_size=kernel, input_shape=(rows, cols, 1), activation='relu',padding='same'))
         model.add(tf.keras.layers.BatchNormalization())
         model.add(tf.keras.layers.Conv2D(64, kernel_size=kernel, activation='relu', padding='same'))
         model.add(tf.keras.layers.BatchNormalization())
@@ -124,30 +79,19 @@ def CrowdNet():
         model.add(tf.keras.layers.BatchNormalization())
 
     else:
-        model.add(tf.keras.layers.Conv2D(64, kernel_size=kernel, activation='relu', padding='same',
-                                         input_shape=(rows, cols, 1),
-                                         kernel_initializer=init))
-        model.add(
-            tf.keras.layers.Conv2D(64, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(64, kernel_size=kernel, activation='relu', padding='same',input_shape=(rows, cols, 1),kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(64, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
         model.add(tf.keras.layers.MaxPooling2D(strides=2))
-        model.add(
-            tf.keras.layers.Conv2D(128, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
-        model.add(
-            tf.keras.layers.Conv2D(128, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(128, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(128, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
         model.add(tf.keras.layers.MaxPooling2D(strides=2))
-        model.add(
-            tf.keras.layers.Conv2D(256, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
-        model.add(
-            tf.keras.layers.Conv2D(256, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
-        model.add(
-            tf.keras.layers.Conv2D(256, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(256, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(256, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(256, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
         model.add(tf.keras.layers.MaxPooling2D(strides=2))
-        model.add(
-            tf.keras.layers.Conv2D(512, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
-        model.add(
-            tf.keras.layers.Conv2D(512, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
-        model.add(
-            tf.keras.layers.Conv2D(512, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(512, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(512, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
+        model.add(tf.keras.layers.Conv2D(512, kernel_size=kernel, activation='relu', padding='same', kernel_initializer=init))
 
     # Conv2D
     model.add(tf.keras.layers.Conv2D(512, (3, 3), activation='relu', dilation_rate=2, kernel_initializer=init,

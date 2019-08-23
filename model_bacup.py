@@ -31,6 +31,7 @@ history = model.fit(x_train, y_train,
 test_scores = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', test_scores[0])
 print('Test accuracy:', test_scores[1])
+
 model.save('path_to_my_model.h5')
 del model
 # Recreate the exact same model purely from the file:
