@@ -3,7 +3,7 @@ from tensorflow import keras
 
 def MCNN():
     inputs = keras.layers.Input(shape=(None, None, 3),name='global_input')
-
+    #hybrid dilated convolution with mcnn
     conv_m = keras.layers.Conv2D(filters=20, kernel_size=(7, 7), strides=1, dilation_rate=1, padding='same',activation='relu')(inputs)
     conv_m = keras.layers.Conv2D(filters=40, kernel_size=(5, 5), strides=1, dilation_rate=2, padding='same',activation='relu')(conv_m)
     conv_m = keras.layers.Conv2D(filters=20, kernel_size=(5, 5), strides=1, dilation_rate=3, padding='same',activation='relu')(conv_m)
