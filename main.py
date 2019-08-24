@@ -36,7 +36,8 @@ for i in range(200):
     if score[1] < best_mae:
         best_mae = score[1]
         best_mae_mse = score[2]
-        save_model(model)
+        #save_model(model)
+
     if score[2] < best_mse:
         best_mse = score[2]
         best_mse_mae = score[1]

@@ -7,8 +7,8 @@ import numpy as np
 
 # path
 root = ''
-defult_model_path = root + 'models'
-default_data_path = root + 'data'
+defult_model_path = root + 'models/'
+default_data_path = root + 'data/'
 shanghai_path = default_data_path + '/ShanghaiTech_Crowd_counting_Dataset'
 
 main_train_image = shanghai_path + '/part_B_final/train_data/images'
@@ -43,9 +43,9 @@ def load_model(path):
 def save_model(model, path=defult_model_path):
     tm = path + time.strftime("%Y-%m-%d_%H_%M", time.gmtime(time.time()))
     os.mkdir(tm)
-    model.save_weight(path + "weight.h5")
+    model.save_weight(path + 'weight.h5')
     model_js = model.to_json()
-    with open(path + '/' + "model.json", "w") as file:
+    with open(path + "model.json", "w") as file:
         file.write(model_js)
 
 
