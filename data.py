@@ -58,7 +58,7 @@ def tf_img_read(path):
     return img
 
 
-def path_generator(path, type=None):
+def path_generator(path, type=None,ret=None):
     if type is None: return [os.path.join(path, name) for name in os.listdir(path)]
     paths = []
     for name in os.listdir(path):
@@ -67,11 +67,12 @@ def path_generator(path, type=None):
     return paths
 
 
-def FOR(operation, obj_list): return list(map(operation, obj_list))
+def FOR(func,obj_list,result=None):
 
-
-def FOR2(operation, obj_list): return [operation(x) for x in obj_list]
-
+    if result is None: return [func(x)for x in obj_list]
+    else:
+        [result.append(func(x)) for x in obj_list]
+        return
 
 def csv_read(path):
     csv = np.loadtxt(path, delimiter=',')
@@ -82,6 +83,6 @@ def csv_read(path):
 def cv2_image_read(path):
     img = cv2.imread(path, 0)
     img = np.array(img)
-    img = (img - 127.5) / 128
+    img = img/255.0
     img = np.reshape(img, (img.shape[0], img.shape[1], 1))
     return img
