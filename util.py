@@ -1,7 +1,5 @@
-import re
-import os
 
-
+#shrink ground truth to meet the pic after maxpooling.
 def csv_read_bac(path):
     with open(path) as file:
         den = np.loadtxt(file, delimiter = ",")

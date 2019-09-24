@@ -20,7 +20,7 @@ csv = '.*\.csv'
 png = '.*\.png'
 mat = '.*\.mat'
 
-dataset = "B"
+dataset = "A"
 
 train_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_patches_9/train/'
 train_den_path = './data/formatted_trainval/shanghaitech_part_' + dataset + '_patches_9/train_den/'
@@ -41,11 +41,11 @@ def load_model(path):
 
 
 def save_model(model, path=defult_model_path):
-    tm = path + time.strftime("%Y-%m-%d_%H_%M", time.gmtime(time.time()))
-    os.mkdir(tm)
-    model.save_weight(path + 'weight.h5')
+    time_dir = path + time.strftime("%Y-%m-%d_%H_%M", time.gmtime(time.time()))
+    os.mkdir(time_dir)
+    model.save_weight(time_dir + '/weight.h5')
     model_js = model.to_json()
-    with open(path + "model.json", "w") as file:
+    with open(time_dir + "/model.json", "w") as file:
         file.write(model_js)
 
 
@@ -58,7 +58,7 @@ def tf_img_read(path):
     return img
 
 
-def path_generator(path, type=None,ret=None):
+def list_path(path, type=None):
     if type is None: return [os.path.join(path, name) for name in os.listdir(path)]
     paths = []
     for name in os.listdir(path):
@@ -67,12 +67,9 @@ def path_generator(path, type=None,ret=None):
     return paths
 
 
-def FOR(func,obj_list,result=None):
+def FOR(func,obj_list):
+    return [func(x) for x in obj_list]
 
-    if result is None: return [func(x)for x in obj_list]
-    else:
-        [result.append(func(x)) for x in obj_list]
-        return
 
 def csv_read(path):
     csv = np.loadtxt(path, delimiter=',')
@@ -86,3 +83,5 @@ def cv2_image_read(path):
     img = img/255.0
     img = np.reshape(img, (img.shape[0], img.shape[1], 1))
     return img
+
+
